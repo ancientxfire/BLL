@@ -1,10 +1,10 @@
-''' Funktion: Setup v1 
-:param alleProjekte: Liste von allen Projekten
-:param alleSuS: Liste mit allen Schülern
 
-
-'''
 def setup(alleProjekte: list, alleSuS: list):
+    ''' Funktion: Setup v1 
+    Args:
+        alleProjekte (list): Liste von allen Projekten
+        alleSuS (list): Liste mit allen Schülern
+'''
     projekteTopf = []
     i = 0
     while i < len(alleProjekte):

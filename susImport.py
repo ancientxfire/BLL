@@ -52,19 +52,16 @@ def susImport(klasse:int | str,excelDateiPfad:str,schuelerdatei:str):
         #bewertung[wahl[0]]=(wahlen.iloc[itt]["Bewertung1"].item() if isinstance(wahlen.iloc[itt]["Bewertung1"] , np.int64) else wahlen.iloc[itt]["Bewertung1"])
         #bewertung[wahl[1]]=(wahlen.iloc[itt]["Bewertung2"].item() if isinstance(wahlen.iloc[itt]["Bewertung2"], np.int64) else wahlen.iloc[itt]["Bewertung2"])
         #bewertung[wahl[2]]=(wahlen.iloc[itt]["Bewertung3"].item() if isinstance(wahlen.iloc[itt]["Bewertung3"], np.int64) else wahlen.iloc[itt]["Bewertung3"])
-        i = 0
         for key in wahl:
             
             newVal = None
             try:
-                v = {0:3,1:2,2:1}
-                #v[i] +random.uniform(0, 1) #
-                newVal = 0+random.uniform(0, 1)
+                newVal = random.uniform(0, 1)
             except Exception as e:
                 newVal = None
                 print(e)
             bewertung[key] = newVal
-            i +=1
+           
         id = name + "-" + klasse
         
         schüler = Schueler(name=name,klasse=klasse,stufe=klassenstufe,wahl=wahl,ranking=bewertung,id=id,letzteBewerbung=0)

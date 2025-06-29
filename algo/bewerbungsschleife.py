@@ -57,6 +57,7 @@ def bewerbungsschleife(alleProjekte, projekteTopf:list[list], schülerTopf: list
         tuple[list[list[Schueler]], list[Schueler]]: Aktualisierte Projektlisten und Restliste der Schüler.
     """
     print("beginn bewerbungsschleife")
+    # Fängt von hinten an, um zu vermeiden, dass beim Löschen ein Falscher index gelöscht wird, da ein löschen in der liste die Indexe hinter diesem gelöschten Schüler ändert
     i = len(schülerTopf) - 1
     while len(schülerTopf) > 0 and any(schüler.letzteBewerbung < 3 for schüler in schülerTopf):
         schüler = schülerTopf[i]
