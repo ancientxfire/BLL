@@ -4,7 +4,7 @@ import numpy as np
 import os 
 import json
 
-
+# Liste der Daten, welche aus dem Excel Sheet geladen werden
 NAMEN_DICT = {"Projektname":"name", "Projekt-ID":"id","Lehrkraft":"lehrkraft","Beschreibung":"beschr","Ort":"ort","Preis":"preis","max Schüler":"maxAnzahl","min Klasse":"minStufe","max Klasse":"maxStufe"}
     
 
