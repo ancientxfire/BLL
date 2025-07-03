@@ -29,7 +29,7 @@ class Projekt:
         self.minStufe = minStufe
         self.maxStufe = maxStufe
         self.preis = preis
-    
+    # Objekt zu Dictionary konvertieren
     def toDict(self):
         newMap = {}
         newMap["name"] = self.name
@@ -43,7 +43,7 @@ class Projekt:
         newMap["preis"] = self.preis
         return newMap
         
-
+    # Dictionary zu Objekt konvertieren
     def fromDict(inpDict: dict):
 
         return Projekt(        
@@ -57,12 +57,13 @@ class Projekt:
             inpDict["maxStufe"],
             inpDict["preis"]
             )
-    
+    # Liste an Dicts zu Liste an Objekten konvertieren
     def fromListOfDicts(inpList: list):
         neueListe = []
         for element in inpList:
             neueListe.append(Projekt.fromDict(element))
         return neueListe
+    # Objekt zu String konvertieren
     def toString(self):
         return json.dumps(self.toDict())
     
