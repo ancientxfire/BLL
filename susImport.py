@@ -49,9 +49,6 @@ def susImport(klasse:int | str,excelDateiPfad:str,schuelerdatei:str):
         wahl.append(wahlen.iloc[itt]["Wahl1"].item() if isinstance(wahlen.iloc[itt]["Wahl1"] , np.int64) else wahlen.iloc[itt]["Wahl1"])
         wahl.append(wahlen.iloc[itt]["Wahl2"].item() if isinstance(wahlen.iloc[itt]["Wahl2"], np.int64) else wahlen.iloc[itt]["Wahl2"])
         wahl.append(wahlen.iloc[itt]["Wahl3"].item() if isinstance(wahlen.iloc[itt]["Wahl3"], np.int64) else wahlen.iloc[itt]["Wahl3"])
-        #bewertung[wahl[0]]=(wahlen.iloc[itt]["Bewertung1"].item() if isinstance(wahlen.iloc[itt]["Bewertung1"] , np.int64) else wahlen.iloc[itt]["Bewertung1"])
-        #bewertung[wahl[1]]=(wahlen.iloc[itt]["Bewertung2"].item() if isinstance(wahlen.iloc[itt]["Bewertung2"], np.int64) else wahlen.iloc[itt]["Bewertung2"])
-        #bewertung[wahl[2]]=(wahlen.iloc[itt]["Bewertung3"].item() if isinstance(wahlen.iloc[itt]["Bewertung3"], np.int64) else wahlen.iloc[itt]["Bewertung3"])
         for key in wahl:
             
             newVal = None
