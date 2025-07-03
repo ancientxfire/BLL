@@ -25,7 +25,7 @@ class Schueler:
         self.id = id
         self.letzteBewerbung = letzteBewerbung
         
-
+    # Objekt zu Dictionary konvertieren
     def toDict(self):
         newMap = {}
         newMap["name"] = self.name
@@ -37,6 +37,7 @@ class Schueler:
         newMap["letzteBewerbung"] = self.letzteBewerbung
         return newMap
         
+    # Dictionary zu Objekt konvertieren
 
     def fromDict(inpDict: dict):
 
@@ -49,12 +50,15 @@ class Schueler:
             inpDict["id"],
             inpDict["letzteBewerbung"]
             )
+    # Liste an Dicts zu Liste an Objekten konvertieren
     
     def fromListOfDicts(inpList: list):
         neueListe = []
         for element in inpList:
             neueListe.append(Schueler.fromDict(element))
         return neueListe
+    # Objekt zu String konvertieren
+
     def toString(self):
         return json.dumps(self.toDict())
     
