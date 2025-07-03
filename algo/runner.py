@@ -12,8 +12,7 @@ def algoRunner(alleProjekte: list, alleSuS:list, ):
     # Projektetopf erstellen
     alleProjekte, alleSuS, projekteTopf = setup(alleProjekte,alleSuS)
     schülerTopf = alleSuS
-    # MARK: TODO: Noch nicht Dokumentiert 
-    schülerTopf = shuffleList(schülerTopf)
+
     # Hauptfunktion 
     projekteTopf, schülerTopf = bewerbungsschleife(alleProjekte,projekteTopf, schülerTopf)
     # Restliche Unaufgeteilte Schüler aufteilen (Wahl 4)
