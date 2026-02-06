@@ -3,8 +3,9 @@
     <UApp>
       <UHeader>
         <template #left>
-          <RouterLink to="/">
-            <AppLogo class="w-auto h-6 shrink-0" />
+          <RouterLink to="/" class=" space-x-2">
+            <UButton to="/sma">SM</UButton>
+            <UButton to="/v1">V1</UButton>
           </RouterLink>
 
           <TemplateMenu />

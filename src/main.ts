@@ -9,7 +9,7 @@ import App from './App.vue'
 const app = createApp(App)
 
 app.use(createRouter({
-  routes: [{ path: '/', component: () => import('./pages/index.vue') },{ path: '/ist', component: () => import('./pages/importSchuelerTest.vue') }],
+  routes: [{ path: '/:algo',name:'home', component: () => import('./pages/index.vue'), },{path:'/',redirect: {path:'/sma'}}],
   history: createWebHistory()
 }))
 

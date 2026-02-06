@@ -13,10 +13,6 @@ export interface ProjektData {
   preis: number;
 }
 
-/**
- * Die Projekt-Klasse
- * Durch das "export" kann sie in .vue oder .ts Dateien importiert werden.
- */
 export class Projekt implements ProjektData {
   constructor(
     public name: string,

@@ -2,7 +2,7 @@
   <UContainer class="py-10 space-y-6">
     <UCard>
       <template #header>
-        <h1 class="text-2xl font-bold">Projekt-Zuweisung (Stable Marriage)</h1>
+        <h1 class="text-2xl font-bold">Projekt-Zuweisung ({{ algoInfos[($route.params.algo as string)]["name"] }})</h1>
         <p class="text-sm text-gray-500">Lade zuerst die Daten hoch, um die Berechnung zu starten.</p>
       </template>
 
@@ -28,7 +28,8 @@
 
       <template #footer>
         <div class="flex gap-4">
-          <UButton :disabled="!canRun" icon="i-heroicons-play" block class="flex-1" @click="algosm">
+          <UButton :loading="isRunning" :disabled="!canRun" icon="i-heroicons-play" block class="flex-1"
+            @click="algoStarter(($route.params.algo as string))">
             Algorithmus ausführen
           </UButton>
           <UButton v-if="output.size > 0" icon="i-heroicons-document-arrow-down" color="success" variant="outline"
@@ -52,54 +53,45 @@
           </div>
         </template>
 
-<div class="text-sm space-y-2">
-  <!-- Hintergrund angepasst für Darkmode Kompatibilität -->
-  <div 
-    v-for="s in liste" 
-    :key="s.id" 
-    class="flex items-center justify-between bg-neutral-100 dark:bg-neutral-800 p-2 rounded-lg border border-neutral-200 dark:border-neutral-700"
-  >
-    <div class="flex flex-col">
-      <span class="font-medium text-neutral-900 dark:text-white">{{ s.name }}</span>
-      <span class="text-[10px] text-neutral-500 dark:text-neutral-400">
-        Wahl: {{ s.wahl }} | {{ s.klasse }}
-      </span>
-    </div>
-    
-    <!-- NuxtUI 4: 'items' statt 'options' -->
-<USelectMenu
-  :items="rawProjekte.filter(p => p.id !== id)"
-  label-key="name"
-  value-key="id"
-  :ui="{ content: 'w-64' }"
-  @update:model-value="(newProjId) => moveStudent(s, id, Number(newProjId))"
->
-  <UButton
-    icon="i-heroicons-arrows-right-left"
-    size="xs"
-    color="neutral"
-    variant="subtle"
-  />
-</USelectMenu>
-  </div>
-</div>
+        <div class="text-sm space-y-2">
+          <!-- Hintergrund angepasst für Darkmode Kompatibilität -->
+          <div v-for="s in liste" :key="s.id"
+            class="flex items-center justify-between bg-neutral-100 dark:bg-neutral-800 p-2 rounded-lg border border-neutral-200 dark:border-neutral-700">
+            <div class="flex flex-col">
+              <span class="font-medium text-neutral-900 dark:text-white">{{ s.name }}</span>
+              <span class="text-[10px] text-neutral-500 dark:text-neutral-400">
+                Wahl: {{ s.wahl }} | {{ s.klasse }}
+              </span>
+            </div>
+
+            <USelectMenu :items="rawProjekte.filter(p => p.id !== id)" label-key="name" value-key="id"
+              :ui="{ content: 'w-64' }" @update:model-value="(newProjId) => moveStudent(s, id, Number(newProjId))">
+              <UButton icon="i-heroicons-arrows-right-left" size="xs" color="neutral" variant="subtle" />
+            </USelectMenu>
+          </div>
+        </div>
       </UCard>
     </div>
   </UContainer>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { processExcelFiles } from '../utils/excel-import-schueler';
 import { processProjektFiles } from '../utils/excel-import-projekte';
 import { exportResults } from '../utils/excel-export';
 import { AlgoSM } from '../classes/algoStableMarriage';
 import { Schueler, type SchuelerData } from '../classes/schueler';
 import { Projekt, type ProjektData } from '../classes/projekt';
+import { useRoute, useRouter } from 'vue-router';
+import { AlgoV1 } from '../classes/algoGreedyV1';
 
 const rawSchueler = ref<SchuelerData[]>([]);
 const rawProjekte = ref<ProjektData[]>([]);
 const output = ref<Map<number, Schueler[]>>(new Map());
+const isRunning = ref<boolean>(false)
+const algoList = ["sma", "v1"]
+const algoInfos: Record<string, Record<string, any>> = { "sma": { name: "Stable Marriage" }, "v1": { name: "Version 1 der BLL" } }
 
 const canRun = computed(() => rawSchueler.value.length > 0 && rawProjekte.value.length > 0);
 
@@ -113,12 +105,54 @@ const onProjektUpload = async (files: File[] | null | undefined) => {
   rawProjekte.value = await processProjektFiles(files, rawProjekte.value);
 };
 
-function algosm() {
+// Prüft, ob schon Ergebnisse vorhanden sind und fragt den User, ob er den Algo ausführen möchte
+function algoStarter(algo: string) {
+  if (output.value.size > 0) {
+    useToast().add({
+      title: 'Der Algo wurde schon ausgeführt, nochmal ausführen?',
+      actions: [{
+        icon: 'i-lucide-refresh-cw',
+        label: 'Nochmal Ausführen',
+        color: 'warning',
+        variant: 'outline',
+        onClick: () => {
+          runAlgo(algo)
+        }
+      }]
+    })
+  }
+  else {
+    runAlgo(algo)
+  }
+}
+
+function runAlgo(algo: string) {
+  isRunning.value = true
   const schuelerInstanzen = Schueler.fromListOfDicts(rawSchueler.value);
   const projektInstanzen = Projekt.fromListOfDicts(rawProjekte.value);
-  const algo = new AlgoSM(schuelerInstanzen, projektInstanzen);
-  output.value = algo.run();
-  useToast().add({ title: 'Berechnung abgeschlossen', color: 'success' });
+
+
+  try {
+    if (algo === "sma") {
+      const algo = new AlgoSM(schuelerInstanzen, projektInstanzen);
+      output.value = algo.run();
+    } else if (algo === "v1") {
+      const algo = new AlgoV1(schuelerInstanzen, projektInstanzen);
+      output.value = algo.run();
+    } else {
+      isRunning.value = false
+      useToast().add({ title: 'Kein valider Algo ausgewählt', color: 'error' });
+      return
+    }
+    useToast().add({ title: 'Berechnung abgeschlossen', description: algo, color: 'success' });
+  } catch (error) {
+    useToast().add({ title: `${error}`, color: 'error' });
+    console.error(error)
+
+  }
+
+
+  isRunning.value = false
 }
 
 /**
@@ -154,4 +188,13 @@ function downloadExcel() {
   const projektInstanzen = Projekt.fromListOfDicts(rawProjekte.value);
   exportResults(output.value, projektInstanzen);
 }
+
+onBeforeMount(() => {
+  const algo: string = useRoute().params.algo as string
+
+  if (!algoList.includes(algo)) {
+    useToast().add({ title: "Dieser Algo ist nicht bekannt!", description: "Der Algo wurde zu SM gewechselt", color: "error" })
+    return useRouter().push({ path: '/sma' })
+  }
+})
 </script>
