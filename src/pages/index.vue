@@ -1,8 +1,9 @@
 <template>
   <UContainer class="py-10 space-y-6">
     <UCard>
+      
       <template #header>
-        <h1 class="text-2xl font-bold">Projekt-Zuweisung ({{ algoInfos[($route.params.algo as string)]["name"] }})</h1>
+        <h1 class="text-2xl font-bold">Projekt-Zuweisung  ({{ getName() }})</h1>
         <p class="text-sm text-gray-500">Lade zuerst die Daten hoch, um die Berechnung zu starten.</p>
       </template>
 
@@ -29,7 +30,7 @@
       <template #footer>
         <div class="flex gap-4">
           <UButton :loading="isRunning" :disabled="!canRun" icon="i-heroicons-play" block class="flex-1"
-            @click="algoStarter(($route.params.algo as string))">
+            @click="algoStarter(($route.query.algo as string))">
             Algorithmus ausführen
           </UButton>
           <UButton v-if="output.size > 0" icon="i-heroicons-document-arrow-down" color="success" variant="outline"
@@ -126,6 +127,15 @@ function algoStarter(algo: string) {
   }
 }
 
+function getName(){
+  const algo: string = useRoute().query.algo as string
+  if (algoList.includes(algo)) {
+    return algoInfos[algo]["name"]
+  } else {
+    return "N/A"
+  }
+}
+
 function runAlgo(algo: string) {
   isRunning.value = true
   const schuelerInstanzen = Schueler.fromListOfDicts(rawSchueler.value);
@@ -190,11 +200,14 @@ function downloadExcel() {
 }
 
 onBeforeMount(() => {
-  const algo: string = useRoute().params.algo as string
-
-  if (!algoList.includes(algo)) {
+  const algo: string = useRoute().query.algo as string
+ 
+  if (algo === undefined){
+    useToast().add({ title: "Der Algo wurde auf SM gesetzt",  color: "info" })
+    return useRouter().push("/?algo=sma")
+  } else if (!algoList.includes(algo)) {
     useToast().add({ title: "Dieser Algo ist nicht bekannt!", description: "Der Algo wurde zu SM gewechselt", color: "error" })
-    return useRouter().push({ path: '/sma' })
+    return useRouter().push("/?algo=sma")
   }
 })
 </script>

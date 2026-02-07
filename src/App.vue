@@ -3,9 +3,9 @@
     <UApp>
       <UHeader>
         <template #left>
-          <RouterLink to="/" class=" space-x-2">
-            <UButton to="/sma">SM</UButton>
-            <UButton to="/v1">V1</UButton>
+          <RouterLink to="/?algo=sma" class=" space-x-2">
+            <UButton to="/?algo=sma">SM</UButton>
+            <UButton to="/?algo=v1">V1</UButton>
           </RouterLink>
 
           <TemplateMenu />
