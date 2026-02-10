@@ -26,8 +26,20 @@ export const processExcelFiles = async (
 
       for (const row of rows) {
         if (!row.Name) continue;
-
-        const id = `${row.Name}-${sheetName}`;
+        let name = ""
+        let vorname = ""
+        let nachname = ""
+        let id = ""
+        if (row.Vorname && row.nachname) {
+          id = `${row.Vorname}-${row.Nachname}-${sheetName}`;
+          vorname = row.Vorname
+          nachname = row.Nachname
+          name = vorname + " " + nachname
+        } else if (row.Name) {
+          id = `${(row.Name as string).trim().replace(' ',"-") }-${sheetName}`;
+          name = row.Name
+        } else continue
+        
         if (idSet.has(id)) continue;
 
         // Wahlen extrahieren
@@ -44,13 +56,15 @@ export const processExcelFiles = async (
         });
 
         const neuerSchueler = new Schueler(
-          row.Name,
+          name,
           sheetName,
           stufe,
           wahl,
           ranking,
           id,
-          0
+          0,
+          vorname,
+          nachname
         );
 
         resultList.push(neuerSchueler.toDict());

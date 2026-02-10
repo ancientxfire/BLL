@@ -2,13 +2,15 @@
  * Interface für die Schüler-Daten
  */
 export interface SchuelerData {
-  name: string;
+  name: string; // legacy code
   klasse: string;
   stufe: number;
   wahl: (number | null)[];
   ranking: Record<string, number>; // Entspricht dict in Python (Key: ID, Value: Score)
   id: string;
   letzteBewerbung: number;
+  vorname: string;
+  nachname: string;
 }
 
 /**
@@ -22,7 +24,9 @@ export class Schueler implements SchuelerData {
     public wahl: (number | null)[],
     public ranking: Record<string, number>,
     public id: string,
-    public letzteBewerbung: number
+    public letzteBewerbung: number,
+    public vorname: string,
+    public nachname: string
   ) {}
 
   /**
@@ -37,6 +41,8 @@ export class Schueler implements SchuelerData {
       ranking: this.ranking,
       id: this.id,
       letzteBewerbung: this.letzteBewerbung,
+      vorname: this.vorname,
+      nachname: this.nachname
     };
   }
 
@@ -51,7 +57,9 @@ export class Schueler implements SchuelerData {
       inpDict.wahl,
       inpDict.ranking,
       inpDict.id,
-      inpDict.letzteBewerbung
+      inpDict.letzteBewerbung,
+      inpDict.vorname,
+      inpDict.nachname
     );
   }
   static fromString(jsonString: string): Schueler {
